@@ -540,6 +540,33 @@ class quiz_access_manager {
         }
     }
 
+    /*********** eClass Modification ************
+    Extra Comments:
+     ************/
+    /**
+     * Check to see if the user should be prevented from reviewing based on their
+     * IP address.
+     *
+     * @return mixed A string indicating that the IP address is invalid, or false
+     *         if review should be allowed.
+     */
+    public function prevent_review_ipaddress() {
+        global $CFG;
+        require_once($CFG->dirroot . '/mod/quiz/accessrule/ipaddress/rule.php');
+        // Check for administrative access and bypass IP restriction.
+        if (has_capability('mod/quiz:manage', $this->quizobj->get_context())) {
+            return false;
+        }
+        // Create the IP address rule and check.
+        $reviewrule = quizaccess_ipaddress::make($this->quizobj, $this->timenow, false);
+        if (is_object($reviewrule)) {
+            return $reviewrule->prevent_access();
+        } else {
+            return false;
+        }
+    }
+    /*********** End eClass Modification ********/
+
     /**
      * Run the preflight checks using the given data in all the rules supporting them.
      *

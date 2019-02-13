@@ -77,6 +77,15 @@ if ($attemptobj->is_own_attempt()) {
     throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'noreviewattempt');
 }
 
+/*********** eClass Modification ************
+Extra Comments:
+ ************/
+$reviewmessage = $accessmanager->prevent_review_ipaddress();
+if ($reviewmessage) {
+    $accessmanager->back_to_view_page($PAGE->get_renderer('mod_quiz'), $reviewmessage);
+}
+/*********** End eClass Modification ********/
+
 // Load the questions and states needed by this page.
 if ($showall) {
     $questionids = $attemptobj->get_slots();
