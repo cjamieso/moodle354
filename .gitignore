@@ -36,3 +36,9 @@ composer.phar
 /lib/yuilib/*/*/*-coverage.js
 atlassian-ide-plugin.xml
 /node_modules/
+**/amd/build/*
+moodle-docker/
+local/codechecker
+local/eclass
+/lib/testing/lib.php
+
