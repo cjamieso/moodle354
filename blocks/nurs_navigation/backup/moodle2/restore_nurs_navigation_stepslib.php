@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__FILE__).'/../../../../config.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
 
@@ -78,15 +77,6 @@ class restore_nurs_navigation_block_structure_step extends restore_structure_ste
         }
     }
 
-    /**
-     * This method copies over any existing files.  Note that currently
-     * only the 'nurs_navigation' table can point to files.
-     *
-     */
-    protected function after_execute() {
-        /* This is not needed for blocks -> only activities.  I think that blocks work around
-         * this by having the get_fileareas() function in the task class */
-    }
 }
 
 /**
@@ -99,8 +89,7 @@ class restore_nurs_navigation_block_structure_step extends restore_structure_ste
 class restore_nurs_navigation_settings_block_structure_step extends restore_structure_step {
 
     /**
-     * Similar to the other class, this sets up the path for the
-     * restore operation.
+     * Setup restore operation.
      *
      * @return array Path elements indicating what to restore.
      *
@@ -133,12 +122,72 @@ class restore_nurs_navigation_settings_block_structure_step extends restore_stru
         }
     }
 
+}
+
+/**
+ * Nurs Navigation block restore class for the activities table.
+ *
+ * @package    block_nurs_navigation
+ * @copyright  2019 Craig Jamieson
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class restore_nurs_navigation_activities_block_structure_step extends restore_structure_step {
+
+    /** @var array IDs of records to process */
+    protected $ids = array();
+
     /**
-     * This method is empty, since the settings table has no files.
-     * I've left it here as a placeholder in case it does later contain
-     * pointers to files.
+     * Setup restore operation.
+     *
+     * @return array Path elements indicating what to restore.
      *
      */
-    protected function after_execute() {
+    protected function define_structure() {
+
+        $paths = array();
+        $paths[] = new restore_path_element('nurs_navigation_activities', '/block/nurs_navigation_activity');
+        return $paths;
     }
+
+    /**
+     * Save all IDs for use in the after_restore() method.
+     *
+     * @param mixed $data The record to insert
+     *
+     */
+    protected function process_nurs_navigation_activities($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $this->ids[] = $data->id;
+    }
+
+    /**
+     * Processes the list of IDs and uses the {backup_ids_temp} table to find the
+     * activity ID in the new course to map the activity categorization.
+     *
+     */
+    protected function after_restore() {
+        global $DB;
+
+        if (empty($this->ids)) {
+            return;
+        }
+        list($insql, $inparams) = $DB->get_in_or_equal($this->ids, SQL_PARAMS_NAMED, 'id');
+        $sql = "SELECT a.*, b.newitemid
+                FROM {backup_ids_temp} b
+                INNER JOIN {nurs_navigation_activities} a ON b.itemid = a.modid
+                WHERE a.id $insql";
+        $records = $DB->get_records_sql($sql, $inparams);
+        foreach ($records as $record) {
+            $record->modid = $record->newitemid;
+            unset($record->newitemid);
+            if ($record->courseid != $this->get_courseid()) {
+                $record->courseid = $this->get_courseid();
+            }
+            $DB->insert_record('nurs_navigation_activities', $record);
+        }
+
+    }
+
 }

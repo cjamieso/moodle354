@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__FILE__).'/../../../../config.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
 
@@ -68,5 +67,26 @@ class backup_nurs_navigation_block_structure_step_settings extends backup_block_
                                   array('courseid', 'sectionname', 'disableicon', 'customlabel'));
         $nursnavigationsettings->set_source_table('nurs_navigation_settings', array('courseid' => backup::VAR_COURSEID));
         return $this->prepare_block_structure($nursnavigationsettings);
+    }
+}
+
+/**
+ * Backup class defining steps for the activities table.
+ *
+ * @package    block_nurs_navigation
+ * @copyright  2019 Craig Jamieson
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class backup_nurs_navigation_block_structure_step_activities extends backup_block_structure_step {
+
+    /**
+     * Define structure for the activities table.
+     *
+     */
+    protected function define_structure() {
+        $nursnavigationactivities = new backup_nested_element('nurs_navigation_activity', array('id'),
+                                  array('courseid', 'basetype', 'modid', 'flaggedtype'));
+        $nursnavigationactivities->set_source_table('nurs_navigation_activities', array('courseid' => backup::VAR_COURSEID));
+        return $this->prepare_block_structure($nursnavigationactivities);
     }
 }

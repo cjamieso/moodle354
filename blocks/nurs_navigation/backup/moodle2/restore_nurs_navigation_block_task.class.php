@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__FILE__).'/../../../../config.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/backup/moodle2/restore_nurs_navigation_stepslib.php');
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
@@ -38,26 +37,26 @@ class restore_nurs_navigation_block_task extends restore_block_task {
     }
 
     /**
-     * Setup the two restore steps: the names of the xml files must
-     * match those that are used in the backup step.
+     * Setup the restore steps: the names of the xml files must match those
+     * that are used in the backup step.
      *
      */
     protected function define_my_steps() {
         $this->add_step(new restore_nurs_navigation_block_structure_step('nurs_navigation_structure', 'nurs_navigation.xml'));
         $this->add_step(new restore_nurs_navigation_settings_block_structure_step('nurs_navigation_settings_structure',
                         'nurs_navigation_settings.xml'));
+        $this->add_step(new restore_nurs_navigation_activities_block_structure_step('nurs_navigation_activities_structure',
+                        'nurs_navigation_activities.xml'));
     }
 
     /**
-     * If any content was run through the encoder, it needs to be
-     * decoded here.  Unlike backup, this seems to be a two step
-     * process where the rules are setup in the method below.
+     * Process the block settings on restore.
      *
-     * @return array Empty array
+     * @return array empty array
      *
      */
     static public function define_decode_contents() {
-        // Empty -> no decoding needed.
+        // Empty -> no decode content.
         return array();
     }
 
@@ -86,8 +85,6 @@ class restore_nurs_navigation_block_task extends restore_block_task {
 
     /**
      * This method is required by the base class definition (abstract).
-     * I'm not sure why it is also a 'getter'.  Returns empy array since
-     * there are no instanced block settings to restore.
      *
      * @return array Empty array
      *

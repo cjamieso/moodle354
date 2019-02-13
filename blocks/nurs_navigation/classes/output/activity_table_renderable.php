@@ -75,27 +75,21 @@ class activity_table_renderable implements renderable, templatable {
         global $DB;
 
         $cmids = [];
-        if ($this->type == 'quiz' || $this->type == 'assign') {
+        if (array_search($this->type, \core_plugin_manager::instance()->standard_plugins_list('mod')) !== false) {
             $mods = get_all_instances_in_course($this->type, $this->course, null, true);
             foreach ($mods as $mod) {
-                $field = $this->type . $mod->coursemodule;
-                $activity = new \block_nurs_navigation\activity($this->courseid, $field);
+                $activity = new \block_nurs_navigation\activity($this->courseid, $this->type, $mod->coursemodule);
                 if ($activity->get_type() == $this->type) {
                     $cmids[] = $mod->coursemodule;
                 }
             }
         }
-        $params = array($this->course->id, $this->type);
-        $query = "SELECT * FROM {nurs_navigation_activities} WHERE courseid = ? AND type = ?";
+        $params = array($this->course->id, $this->type, $this->type);
+        $query = "SELECT * FROM {nurs_navigation_activities} WHERE courseid = ? AND basetype <> ? AND flaggedtype = ?";
         $records = $DB->get_records_sql($query, $params);
         foreach ($records as $record) {
-            $activity = new \block_nurs_navigation\activity($this->course->id, $record->activity);
-            // If type matches moodle type, then we've already counted this.
-            if (($this->type == 'quiz' && $activity->get_moodle_type() == 'quiz') || ($this->type == 'assign' &&
-                $activity->get_moodle_type() == 'assign')) {
-                continue;
-            }
-            $cmids[] = preg_replace("/[^0-9]/", '', $record->activity);
+            $activity = new \block_nurs_navigation\activity($this->course->id, $record->basetype, $record->modid);
+            $cmids[] = $activity->get_module_id();
         }
         return $cmids;
     }
@@ -120,16 +114,16 @@ class activity_table_renderable implements renderable, templatable {
                     if (!$modinfo->cms[$mod]->visible) {
                         continue;
                     }
-                    $temp = array('section' => $section, 'visible' => $modinfo->cms[$mod]->uservisible, 'cmid' => $mod);
-                    if ($modinfo->cms[$mod]->modname == 'quiz') {
-                        $quizinfo = $this->get_quiz_info($modinfo->cms[$mod]->instance);
-                    } else if ($modinfo->cms[$mod]->modname == 'assign') {
-                        $quizinfo = $this->get_assign_info($modinfo->cms[$mod]->instance);
+                    $temp = array('section' => $section, 'visible' => $modinfo->cms[$mod]->uservisible, 'cmid' => $mod,
+                        'type' => $modinfo->cms[$mod]->modname);
+                    $method = 'get_' . $modinfo->cms[$mod]->modname . '_info';
+                    if (method_exists($this, $method)) {
+                        $info = $this->$method($modinfo->cms[$mod]);
                     } else {
-                        throw new \Exception(get_string('modnotfound', 'block_nurs_navigation'));
-                        // Throw exception.
+                        $info = array('name' => $modinfo->cms[$mod]->name,
+                            'close' => get_string('closedateerror', 'block_nurs_navigation'));
                     }
-                    $results[] = array_merge($temp, $quizinfo);
+                    $results[] = array_merge($temp, $info);
                 }
             }
         }
@@ -139,29 +133,54 @@ class activity_table_renderable implements renderable, templatable {
     /**
      * Gets the quiz information.
      *
-     * @param  int  $id  the quiz ID
+     * @param  object  $cm  the module info
      * @return array  quiz information (name + time closing)
      */
-    protected function get_quiz_info($id) {
+    protected function get_quiz_info($cm) {
         global $DB;
 
-        $record = $DB->get_record('quiz', array('id' => $id));
-        $close = ($record->timeclose == 0) ? get_string('noclose', 'quiz') : userdate($record->timeclose);
+        $record = $DB->get_record('quiz', array('id' => $cm->instance));
+        $close = ($record->timeclose == 0) ? get_string('none', 'quiz') : userdate($record->timeclose);
         return array('name' => $record->name, 'close' => $close);
     }
 
     /**
      * Gets the assignment information.
      *
-     * @param  int  $id  the assignment ID
+     * @param  object  $cm  the module info
      * @return array  the assignment information (name + time closing)
      */
-    protected function get_assign_info($id) {
+    protected function get_assign_info($cm) {
         global $DB;
 
-        $record = $DB->get_record('assign', array('id' => $id));
-        $close = ($record->duedate == 0) ? get_string('noclose', 'assign') : userdate($record->duedate);
+        $record = $DB->get_record('assign', array('id' => $cm->instance));
+        $close = ($record->duedate == 0) ? get_string('none', 'assign') : userdate($record->duedate);
         return array('name' => $record->name, 'close' => $close);
+    }
+
+    /**
+     * Gets the forum information.
+     *
+     * @param  object  $cm  the module info
+     * @return array  the assignment information (name + time closing)
+     */
+    protected function get_forum_info($cm) {
+        global $DB;
+
+        $availability = json_decode($cm->availability);
+        $close = get_string('closedateerror', 'block_nurs_navigation');
+        $closeconditions = array();
+        if (is_object($availability)) {
+            foreach ($availability->c as $condition) {
+                if ($condition->d == "<") {
+                    $closeconditions[] = $condition->t;
+                }
+            }
+        }
+        if (!empty($closeconditions)) {
+            $close = userdate(min($closeconditions));
+        }
+        return array('name' => $cm->name, 'close' => $close);
     }
 
 }

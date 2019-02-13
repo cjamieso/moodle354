@@ -120,3 +120,21 @@ function get_section_titles($courseid,  &$sectionheaders) {
     }
     return $numberofsections;
 }
+
+/**
+ * Check to see if a custom title is specified.  If not, fall back on the activity
+ * name.
+ *
+ * @param  string  $type  the activity type
+ * @return string  the title to use for the activity
+ */
+function get_activity_title($type) {
+
+    if (get_string_manager()->string_exists($type . 'title', BNN_LANG_TABLE)) {
+        return get_string($type . 'title', BNN_LANG_TABLE);
+    } else if (get_string_manager()->string_exists('modulenameplural', $type)) {
+        return get_string('modulenameplural', $type);
+    } else {
+        return get_string('missingtitle', BNN_LANG_TABLE);
+    }
+}

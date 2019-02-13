@@ -44,7 +44,7 @@ Context variables required for this template:
                 <td class="cell c0" style="text-align:center;">{{section}}</td>
                 <td class="cell c1" style="text-align:left;">
                 {{# visible }}
-                    <a href="/mod/quiz/view.php?id={{{cm}}}">{{name}}</a>
+                    <a href="/mod/{{{type}}}/view.php?id={{{cmid}}}">{{name}}</a>
                 {{/ visible }}
                 {{^ visible }}
                     <div class="dimmed dimmed_text">{{name}}</div>

@@ -93,8 +93,8 @@ function xmldb_block_nurs_navigation_upgrade($oldversion = 0) {
         upgrade_block_savepoint(true, 2013061706, 'nurs_navigation');
     }
 
-    // On Nov. 18th, 1028, I added a new table to control activity aggregation.
-    if ($oldversion < 2018111900) {
+    // On Mar. 4th, 2019, I added a new table to control activity aggregation.
+    if ($oldversion < 2019030400) {
 
         // Define table nurs_navigation_settings to be created.
         $table = new xmldb_table('nurs_navigation_activities');
@@ -102,8 +102,9 @@ function xmldb_block_nurs_navigation_upgrade($oldversion = 0) {
         // Adding fields to table nurs_navigation_activities.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('activity', XMLDB_TYPE_TEXT, 'big', null, XMLDB_NOTNULL, null, null, null);
-        $table->add_field('type', XMLDB_TYPE_TEXT, 'big', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('basetype', XMLDB_TYPE_TEXT, 'big', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('modid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('flaggedtype', XMLDB_TYPE_TEXT, 'big', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table nurs_navigation_activities.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
@@ -113,7 +114,7 @@ function xmldb_block_nurs_navigation_upgrade($oldversion = 0) {
             $dbman->create_table($table);
         }
 
-        upgrade_block_savepoint(true, 2018111900, 'nurs_navigation');
+        upgrade_block_savepoint(true, 2019030400, 'nurs_navigation');
     }
 
     return $result;

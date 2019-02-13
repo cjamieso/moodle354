@@ -26,24 +26,24 @@
  */
 
 require_once(dirname(__FILE__).'/../../config.php');
-require_once('edit_activities_form.class.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
 
-global $DB, $OUTPUT, $PAGE, $USER;
+global $DB, $OUTPUT, $PAGE;
 
 $courseid = required_param('courseid', PARAM_INT);
 $type = required_param('type', PARAM_TEXT);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    print_error('invalidcourse', 'block_nurs_navigation', $courseid);
+    print_error('invalidcourse', BNN_LANG_TABLE, $courseid);
 }
 require_login($course);
 
 $PAGE->set_url('/blocks/nurs_navigation/activity_table.php', array('id' => $courseid, 'type' => $type));
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string($type . 'title', BNN_LANG_TABLE));
-$PAGE->set_heading(get_string($type . 'title', BNN_LANG_TABLE));
+$title = get_activity_title($type);
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 $renderable = new \block_nurs_navigation\output\activity_table_renderable($courseid, $type);

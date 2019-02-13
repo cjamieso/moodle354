@@ -29,25 +29,22 @@ require_once(dirname(__FILE__).'/../../config.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
 
-global $DB, $OUTPUT, $PAGE, $USER;
+global $DB, $OUTPUT, $PAGE;
 
 $courseid = required_param('courseid', PARAM_INT);
 $blockid = required_param('blockid', PARAM_INT);
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = get_course($courseid)) {
     print_error('invalidcourse', 'block_nurs_navigation', $courseid);
 }
-if (!isloggedin()) {
-    echo get_string('loginrequired', BNN_LANG_TABLE);
-    return;
-}
+require_login($course, false);
 if (!has_capability('block/nurs_navigation:caneditnursnavigation', context_course::instance($courseid))) {
     echo get_string('noaccess', BNN_LANG_TABLE);
     return;
 }
 
 $PAGE->set_url('/blocks/nurs_navigation/edit_activities.php', array('id' => $courseid));
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(context_course::instance($COURSE->id));
 $PAGE->set_title(get_string('editactivitiestitle', BNN_LANG_TABLE));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('editactivitiestitle', BNN_LANG_TABLE));

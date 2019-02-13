@@ -80,7 +80,7 @@ class edit_navigation_form extends \moodleform {
             $customlabelfield = 'customlabelfield_'."$i";
             $customlabelcheckbox = 'customlbelcheckbox_'."$i";
 
-            $sectionname = $this->sectionheaders[$i+1];
+            $sectionname = $this->sectionheaders[$i + 1];
             $courseid = $this->courseid;
 
             $si = new section_icon($courseid, $sectionname);

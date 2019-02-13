@@ -80,9 +80,9 @@ class test_activity extends nurs_navigation_unit_test{
 
         $courseid = $this->testcourseid;
 
-        $activity = new \block_nurs_navigation\activity($courseid, 'quiz' . $this->quizzes[0]->cmid);
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
         $this->assertFalse((bool)$activity->exists());
-        $activity = new \block_nurs_navigation\activity($courseid, 'assign' . $this->assignments[0]->cmid);
+        $activity = new \block_nurs_navigation\activity($courseid, 'assign', $this->assignments[0]->cmid);
         $this->assertFalse((bool)$activity->exists());
     }
 
@@ -98,28 +98,41 @@ class test_activity extends nurs_navigation_unit_test{
         $courseid = $this->testcourseid;
 
         // Test 1: default record with no type set.
-        $activity = new \block_nurs_navigation\activity($courseid, 'quiz' . $this->quizzes[0]->cmid);
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
         $this->assertEquals($activity->get_type(), 'quiz');
         $this->assertEquals($activity->get_moodle_type(), 'quiz');
 
         // Test 2: overridding will create a record entry (now exists).
-        $activity = new \block_nurs_navigation\activity($courseid, 'quiz' . $this->quizzes[0]->cmid);
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
         $activity->update_type('quest');
         $this->assertTrue((bool)$activity->exists());
         $this->assertEquals($activity->get_type(), 'quest');
         $this->assertEquals($activity->get_moodle_type(), 'quiz');
 
         // Test 3: now reset the type and ensure that it gets deleted.
-        $activity = new \block_nurs_navigation\activity($courseid, 'quiz' . $this->quizzes[0]->cmid);
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
         $activity->update_type('quiz');
         $this->assertFalse((bool)$activity->exists());
         $this->assertEquals($activity->get_type(), 'quiz');
         $this->assertEquals($activity->get_moodle_type(), 'quiz');
+    }
 
-        // Test 4: invalid record.
-        $activity = new \block_nurs_navigation\activity($courseid, 'invalid' . $this->quizzes[0]->cmid);
-        $this->expectException('Exception', get_string('modnotfound', 'block_nurs_navigation'));
-        $activity->get_moodle_type();
+    /**
+     * Test the get_module_id() function to see if the correct ID is returned.
+     *
+     */
+    public function test_get_module_id() {
+
+        $courseid = $this->testcourseid;
+
+        // Test 1: default record with no type set.
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
+        $this->assertEquals($activity->get_module_id(), $this->quizzes[0]->cmid);
+
+        // Test 2: overridding will create a record entry.
+        $activity = new \block_nurs_navigation\activity($courseid, 'quiz', $this->quizzes[0]->cmid);
+        $activity->update_type('quest');
+        $this->assertEquals($activity->get_module_id(), $this->quizzes[0]->cmid);
     }
 
 }

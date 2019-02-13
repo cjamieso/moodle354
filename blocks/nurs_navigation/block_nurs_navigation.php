@@ -101,13 +101,17 @@ class block_nurs_navigation extends block_base {
         $context = context_course::instance($courseid);
         $canmanage = has_capability('block/nurs_navigation:caneditnursnavigation', $context);
 
-        $url = new moodle_url('/course/view.php', array('id' => $COURSE->id, 'section' => 0));
-        $this->content->footer .= "<div>".html_writer::link($url, get_string('showallsections', BNN_LANG_TABLE))."</div>";
+        if (isset($this->config->sections) && ($this->config->sections)) {
+            $url = new moodle_url('/course/view.php', array('id' => $COURSE->id, 'section' => 0));
+            $this->content->footer .= "<div>".html_writer::link($url, get_string('showallsections', BNN_LANG_TABLE))."</div>";
+            if ($canmanage) {
+                $url = new moodle_url('/blocks/nurs_navigation/edit_navigation.php',
+                                       array('courseid' => $COURSE->id, 'blockid' => $this->instance->id));
+                $this->content->footer .= "<div>".html_writer::link($url, get_string('editsettings', BNN_LANG_TABLE))."</div>";
+            }
+        }
 
         if ($canmanage) {
-            $url = new moodle_url('/blocks/nurs_navigation/edit_navigation.php',
-                                   array('courseid' => $COURSE->id, 'blockid' => $this->instance->id));
-            $this->content->footer .= "<div>".html_writer::link($url, get_string('editsettings', BNN_LANG_TABLE))."</div>";
             $url = new moodle_url('/blocks/nurs_navigation/edit_activities.php',
                                    array('courseid' => $COURSE->id, 'blockid' => $this->instance->id));
             $this->content->footer .= "<div>".html_writer::link($url, get_string('editactivities', BNN_LANG_TABLE))."</div>";
@@ -208,15 +212,12 @@ class block_nurs_navigation extends block_base {
     private function get_activity_links($courseid) {
 
         $outputbuffer = '';
-        if (!isset($this->config->disableexams) || (isset($this->config->disableexams) && !$this->config->disableexams)) {
-            $outputbuffer .= $this->get_activity_link(get_string('exams', BNN_LANG_TABLE), 'quiz', $courseid);
-        }
-        if (!isset($this->config->disableassignments) || (isset($this->config->disableassignments) &&
-            !$this->config->disableassignments)) {
-            $outputbuffer .= $this->get_activity_link(get_string('assignments', BNN_LANG_TABLE), 'assign', $courseid);
-        }
-        if (!isset($this->config->disablequests) || (isset($this->config->disablequests) && !$this->config->disablequests)) {
-            $outputbuffer .= $this->get_activity_link(get_string('quests', BNN_LANG_TABLE), 'quest', $courseid);
+        $activities = explode(',', preg_replace("/[^A-Za-z,]+/", "", get_config('nurs_navigation', 'Activities')));
+        $disable = isset($this->config->disableactivities) ? $this->config->disableactivities : [];
+        foreach ($activities as $activity) {
+            if ((array_search('none', $disable) !== false) || (array_search($activity, $disable) === false)) {
+                $outputbuffer .= $this->get_activity_link($activity, $courseid);
+            }
         }
         return $outputbuffer;
     }
@@ -224,26 +225,35 @@ class block_nurs_navigation extends block_base {
     /**
      * Retrieve the link for one specific activity type
      *
-     * @param  string  $title     the name of the activity type
      * @param  int     $courseid  the ID of the course
      * @return string  a buffer containing the activity link
      */
-    private function get_activity_link($title, $type, $courseid) {
+    private function get_activity_link($type, $courseid) {
+        global $CFG;
 
         // Grab height/width from admin settings.
         $height = get_config('nurs_navigation', 'Image_Height');
         $width = get_config('nurs_navigation', 'Image_Width');
+        $field = 'custom' . $type;
+        if (isset($this->config->$field) && !empty(trim($this->config->$field))) {
+            $title = $this->config->$field;
+        } else {
+            $title = get_activity_title($type);
+        }
 
         $outputbuffer = "<li><div>";
         $outputbuffer .= "<a title=\"{$title}\"href=
             '/blocks/nurs_navigation/activity_table.php?courseid={$courseid}&type={$type}'>";
-        $src = '/blocks/nurs_navigation/pix/' . $type . '.png';
+        if (file_exists($CFG->dirroot . '/blocks/nurs_navigation/pix/' . $type . '.png')) {
+            $src = '/blocks/nurs_navigation/pix/' . $type . '.png';
+        } else {
+            $src = '/mod/' . $type . '/pix/icon.png';
+        }
         $outputbuffer .= "<span class=\"media-left\">";
         $outputbuffer .= "<img class=\"icon\" alt=\"$title\" src='$src' height='$height' width='$width' /></span>";
         $outputbuffer .= "<span class=\"media-body\">$title</a></span></div></li>";
         return $outputbuffer;
     }
-
 
     /**
      * This function determines whether a user has permission to view the section.  Nursing uses

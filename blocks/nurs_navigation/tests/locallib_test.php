@@ -105,4 +105,23 @@ class test_nursnavigationlib extends nurs_navigation_unit_test{
         $this->assertFalse((bool)isset($sectionheaders[0]));
     }
 
+    /**
+     * This method tests get_activity_title().  There are three possible cases:
+     * 1) override of title by the plugin.
+     * 2) default to name of mod if mod recognized.
+     * 3) no title found, default string.
+     *
+     */
+    public function test_get_activity_title() {
+
+        $title = get_activity_title('quiz');
+        $this->assertEquals($title, get_string('quiztitle', 'block_nurs_navigation'));
+
+        $title = get_activity_title('feedback');
+        $this->assertEquals($title, get_string('modulenameplural', 'mod_feedback'));
+
+        $title = get_activity_title('garbage');
+        $this->assertEquals($title, get_string('missingtitle', 'block_nurs_navigation'));
+    }
+
 }

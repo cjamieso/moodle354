@@ -23,8 +23,8 @@ require_once($CFG->dirroot.'/blocks/nurs_navigation/lib.php');
 /**
  * edit_activities_form class
  *
- * This class creates form which allows users to categorize quizzes and assignments in the
- * course so that they can be aggregated and displayed to users.
+ * This class creates form which allows users to categorize activities in the course
+ * so that they can be aggregated and displayed to users.
  *
  * @package    block_nurs_navigation
  * @copyright  2018 Craig Jamieson
@@ -45,9 +45,8 @@ class edit_activities_form extends \moodleform {
     }
 
     /**
-     * Form definition: the form contains two sections: quizzes and assignments
-     * The user may indicate what the classificiation of each quiz/assignment is from
-     * a list of 4 choices: {quiz|assignment|quest|none}
+     * Form definition: the form contains a section for each activity.
+     * The user may indicate what the classificiation is of each activity from a list.
      */
     public function definition() {
         global $DB;
@@ -55,9 +54,13 @@ class edit_activities_form extends \moodleform {
         $mform = &$this->_form;
         $course = $DB->get_record('course', array('id' => $this->courseid));
 
-        $this->add_assessments('quiz', get_string('setquizzes', BNN_LANG_TABLE), get_all_instances_in_course('quiz', $course));
-        $this->add_assessments('assign', get_string('setassignments', BNN_LANG_TABLE), get_all_instances_in_course('assign',
-            $course));
+        $types = explode(',', preg_replace("/[^A-Za-z,]+/", "", get_config('nurs_navigation', 'Activities')));
+        foreach ($types as $type) {
+            if (array_search($type, \core_plugin_manager::instance()->standard_plugins_list('mod')) !== false) {
+                $this->add_assessments($type, get_string('modulenameplural', $type),
+                    get_all_instances_in_course($type, $course));
+            }
+        }
 
         // Hidden elements (courseid + blockid: needed for posting).
         $mform->addElement('hidden', 'courseid');
@@ -69,7 +72,7 @@ class edit_activities_form extends \moodleform {
     }
 
     /**
-     * Add a list of assessments (quizzes or assignments) to the form.
+     * Add a list of activities to the form.
      *
      * @param  string  $headerid     the ID for the form header
      * @param  string  $headertitle  the title for the section
@@ -78,20 +81,28 @@ class edit_activities_form extends \moodleform {
     private function add_assessments($headerid, $headertitle, $mods) {
 
         $mform = &$this->_form;
-        $options = array('quiz' => get_string('modulename', 'mod_quiz'), 'assign' => get_string('modulename', 'mod_assign'),
-            'quest' => get_string('quest', BNN_LANG_TABLE), 'none' => get_string('none'));
+        $types = explode(',', preg_replace("/[^A-Za-z,]+/", "", get_config('nurs_navigation', 'Activities')));
+        $options = array();
+        foreach ($types as $type) {
+            if (array_search($type, \core_plugin_manager::instance()->standard_plugins_list('mod')) === false) {
+                $options[$type] = get_string('quest', BNN_LANG_TABLE);
+            } else {
+                $options[$type] = get_string('modulename', $type);
+            }
+        }
+        $options['none'] = get_string('none');
         $mform->addElement('header', $headerid, $headertitle);
         foreach ($mods as $mod) {
             $field = $headerid . $mod->coursemodule;
             $select = $mform->addElement('select', $field, $mod->name, $options);
-            $activity = new activity($this->courseid, $field);
+            $activity = new activity($this->courseid, $headerid, $mod->coursemodule);
             $select->setSelected($activity->get_type());
         }
     }
 
     /**
-     * Process a submitted form.  Go through each quiz and assignment and update
-     * its associated type field that the user has indicated.
+     * Process a submitted form.  Go through each activity and update its
+     * associated type field that the user has indicated.
      *
      * @param  object  $form  the submitted data
      */
@@ -99,18 +110,17 @@ class edit_activities_form extends \moodleform {
         global $DB;
 
         $course = $DB->get_record('course', array('id' => $this->courseid));
-        $quizzes = get_all_instances_in_course("quiz", $course);
-        foreach ($quizzes as $quiz) {
-            $field = 'quiz' . $quiz->coursemodule;
-            $activity = new activity($this->courseid, $field);
-            $activity->update_type($form->$field);
-        }
-
-        $assignments = get_all_instances_in_course("assign", $course);
-        foreach ($assignments as $assignment) {
-            $field = 'assign' . $assignment->coursemodule;
-            $activity = new activity($this->courseid, $field);
-            $activity->update_type($form->$field);
+        $types = explode(',', preg_replace("/[^A-Za-z,]+/", "", get_config('nurs_navigation', 'Activities')));
+        foreach ($types as $type) {
+            if (array_search($type, \core_plugin_manager::instance()->standard_plugins_list('mod')) !== false) {
+                $mods = get_all_instances_in_course($type, $course);
+                foreach ($mods as $mod) {
+                    $activity = new activity($this->courseid, $type, $mod->coursemodule);
+                    $field = $type . $mod->coursemodule;
+                    $activity->update_type($form->$field);
+                }
+            }
         }
     }
+
 }

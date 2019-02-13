@@ -31,7 +31,7 @@ Feature: View Section Icons
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I configure the "Course Sections" block
-    And I set the field "Show sections" to "1"
+    And I set the field "Show all sections" to "1"
     And I press "Save changes"
     And I log out
     And I log in as "student1"

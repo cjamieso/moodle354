@@ -26,7 +26,6 @@
  */
 
 require_once(dirname(__FILE__).'/../../config.php');
-require_once('edit_navigation_form.class.php');
 global $CFG;
 require_once($CFG->dirroot.'/blocks/nurs_navigation/locallib.php');
 
@@ -35,13 +34,10 @@ global $DB, $OUTPUT, $PAGE, $USER;
 $courseid = required_param('courseid', PARAM_INT);
 $blockid = required_param('blockid', PARAM_INT);
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = get_course($courseid)) {
     print_error('invalidcourse', 'block_nurs_navigation', $courseid);
 }
-if (!isloggedin()) {
-    echo get_string('loginrequired', BNN_LANG_TABLE);
-    return;
-}
+require_login($course, false);
 if (!has_capability('block/nurs_navigation:caneditnursnavigation', context_course::instance($courseid))) {
     echo get_string('noaccess', BNN_LANG_TABLE);
     return;
@@ -63,7 +59,7 @@ $toform['blockid'] = $blockid;
 
 // And setup icon checkboxes.
 for ($i = 0; $i < $numberofsections; $i++) {
-    $si = new \block_nurs_navigation\section_icon($courseid, $sectionheaders[$i+1]);
+    $si = new \block_nurs_navigation\section_icon($courseid, $sectionheaders[$i + 1]);
     $noiconname = 'noicon_'."$i";
     $toform[$noiconname] = $si->get_icon_disable();
     $customlabelfield = 'customlabelfield_'."$i";
@@ -119,7 +115,7 @@ function process_form($courseid, $blockid,  & $submittedform,  & $sectionheaders
         $customlabelfield = 'customlabelfield_'."$i";
         $customlabelcheckbox = 'customlbelcheckbox_'."$i";
 
-        $si = new \block_nurs_navigation\section_icon($courseid, $sectionheaders[$i+1]);
+        $si = new \block_nurs_navigation\section_icon($courseid, $sectionheaders[$i + 1]);
 
         // Update master via using courseid 0.
         if (!isset($submittedform->$masterupdatename)) {

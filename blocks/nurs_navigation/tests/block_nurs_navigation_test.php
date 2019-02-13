@@ -48,14 +48,14 @@ class test_nursnavigationblock extends nurs_navigation_unit_test{
 
         // Admin users should see the activity link, but not the section.
         $this->setAdminUser();
-        $this->assertTag(array('tag' => 'img', 'attributes' => array('alt' => get_string('exams', 'block_nurs_navigation'))),
+        $this->assertTag(array('tag' => 'img', 'attributes' => array('alt' => get_string('quiztitle', 'block_nurs_navigation'))),
                          $mockblock->refresh_content()->footer);
         $this->assertNotTag(array('tag' => 'img', 'attributes' => array('alt' => self::SECTION1_NAME)),
                             $mockblock->refresh_content()->footer);
 
         // Students should see the activity link, but not the section.
         $this->setUser($this->student);
-        $this->assertTag(array('tag' => 'img', 'attributes' => array('alt' => get_string('exams', 'block_nurs_navigation'))),
+        $this->assertTag(array('tag' => 'img', 'attributes' => array('alt' => get_string('quiztitle', 'block_nurs_navigation'))),
                          $mockblock->refresh_content()->footer);
         $this->assertNotTag(array('tag' => 'img', 'attributes' => array('alt' => self::SECTION5_NAME)),
                             $mockblock->refresh_content()->footer);

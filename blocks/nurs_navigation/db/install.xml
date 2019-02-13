@@ -30,9 +30,10 @@
     <TABLE NAME="nurs_navigation_activities" COMMENT="This table contains course information regarding how to aggregate quiz/assignment activities." PREVIOUS="nurs_navigation_settings">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="courseid"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="activity"/>
-        <FIELD NAME="activity" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseid" NEXT="type"/>
-        <FIELD NAME="type" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" PREVIOUS="activity"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="basetype"/>
+        <FIELD NAME="basetype" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" PREVIOUS="courseid" NEXT="modid"/>
+        <FIELD NAME="modid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="basetype" NEXT="flaggedtype"/>
+        <FIELD NAME="flaggedtype" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" PREVIOUS="activity"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

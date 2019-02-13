@@ -59,3 +59,11 @@ $settings->add(new admin_setting_configselect(
         "before",
         array("before" => get_string('before', BNN_LANG_TABLE), "after" => get_string('after', BNN_LANG_TABLE)))
 );
+
+$settings->add(new admin_setting_configtext(
+        'nurs_navigation/Activities',
+        get_string('activitieslabel', BNN_LANG_TABLE),
+        get_string('activitiesdescription', BNN_LANG_TABLE),
+        "quiz, assign, quest, forum",
+        PARAM_TEXT)
+);

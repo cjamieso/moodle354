@@ -1,6 +1,6 @@
 @block @block_nurs_navigation
 Feature: Customize Activities
-  In order to customize quizzes and assignments
+  In order to customize activities
   As a instructor
   I need to flag an activity as a quiz, assignment, or quest
 
@@ -27,7 +27,7 @@ Feature: Customize Activities
     And I am on "Course 1" course homepage with editing mode on
     And I add the "Course Sections" block
 
-  Scenario: Customize quizzes and assignments as an instructor
+  Scenario: Customize activities as an instructor
     When I click on "Edit activities" "link" in the "Course Sections" "block"
     And I set the following fields to these values:
       | Quiz 1 | Quiz |
@@ -49,3 +49,24 @@ Feature: Customize Activities
     And I click on "Quests" "link" in the "Course Sections" "block"
     Then I should see "Quiz 2" in the "#page-content" "css_element"
     And I should see "Assignment 1" in the "#page-content" "css_element"
+
+  @javascript
+  Scenario: Override disabling of activities
+    When I configure the "Course Sections" block
+    And I open the autocomplete suggestions list
+    And I click on "Exams" item in the autocomplete list
+    And I click on "None" item in the autocomplete list
+    And I press "Save changes"
+    Then I should see "Exams" in the "Course Sections" "block"
+
+  @javascript
+  Scenario: Customize activities text
+    When I configure the "Course Sections" block
+    And I set the following fields to these values:
+      | Exams | Quizzes |
+      | Quests | Que? |
+    And I press "Save changes"
+    Then I should see "Quizzes" in the "Course Sections" "block"
+    And I should not see "Exams" in the "Course Sections" "block"
+    And I should see "Que?" in the "Course Sections" "block"
+    And I should not see "Quests" in the "Course Sections" "block"

@@ -19,13 +19,14 @@ Feature: Customize Section Icons
       | student1 | C1 | student |
     And I log in as "admin"
     And I am on "Course 1" course homepage with editing mode on
-    And I add the "Nursing Navigation" block
+    And I add the "Course Sections" block
     And I configure the "Course Sections" block
     And I set the following fields to these values:
-      | Show sections | 1 |
-      | Disable exams link | 1 |
-      | Disable assignments link | 1 |
-      | Disable quests link | 1 |
+      | Show all sections | 1 |
+    And I open the autocomplete suggestions list
+    And I click on "Exams" item in the autocomplete list
+    And I click on "Assignments" item in the autocomplete list
+    And I click on "Quests" item in the autocomplete list
     And I press "Save changes"
 
   @javascript @_file_upload

@@ -25,15 +25,15 @@ Feature: View Activities
       | assign | Assignment 2 | description | C1 | assign2 |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
+    When I add the "Course Sections" block
 
-  @javascript @wip
+  @javascript
   Scenario: View exams and assignments as a student
-    When I add the "Nursing Navigation" block
-    And I add a "Quiz" to section "1" and I fill the form with:
+    When I add a "Quiz" to section "1" and I fill the form with:
       | Name | Quiz 3 |
       | Description | description |
       | Availability | Hide from students |
-    When I add a "Quiz" to section "1"
+    And I add a "Quiz" to section "1"
     And I set the following fields to these values:
       | Name | Quiz 4 |
       | Description | description |
@@ -54,35 +54,40 @@ Feature: View Activities
     And I should see "Quiz 2" in the "#page-content" "css_element"
     And I should not see "Quiz 3" in the "#page-content" "css_element"
     And I should see "Quiz 4" in the "#region-main .dimmed_text" "css_element"
+    And I click on "Quiz 2" "link" in the "#page-content" "css_element"
+    Then I should see "Grading method: Highest grade"
     When I am on "Course 1" course homepage
     And I click on "Assignments" "link" in the "Course Sections" "block"
     Then I should see "Assignment 1" in the "#page-content" "css_element"
     And I should see "Assignment 2" in the "#page-content" "css_element"
 
+  @javascript
   Scenario: Exams link removed
-    When I add the "Course Sections" block
-    And I configure the "Course Sections" block
-    And I set the field "Disable exams link" to "1"
+    When I configure the "Course Sections" block
+    And I open the autocomplete suggestions list
+    And I click on "Exams" item in the autocomplete list
     And I press "Save changes"
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
     Then I should not see "Exams" in the "Course Sections" "block"
 
+  @javascript
   Scenario: Assignments link removed
-    When I add the "Course Sections" block
-    And I configure the "Course Sections" block
-    And I set the field "Disable assignments link" to "1"
+    When I configure the "Course Sections" block
+    And I open the autocomplete suggestions list
+    And I click on "Assignments" item in the autocomplete list
     And I press "Save changes"
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
     Then I should not see "Assignments" in the "Course Sections" "block"
 
+  @javascript
   Scenario: Quests link removed
-    When I add the "Course Sections" block
-    And I configure the "Course Sections" block
-    And I set the field "Disable quests link" to "1"
+    When I configure the "Course Sections" block
+    And I open the autocomplete suggestions list
+    And I click on "Quests" item in the autocomplete list
     And I press "Save changes"
     And I log out
     And I log in as "student1"

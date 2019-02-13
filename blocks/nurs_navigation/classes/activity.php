@@ -37,23 +37,27 @@ class activity {
     private $record;
     /** This is the ID of the course that we are getting the icon for. */
     private $courseid;
-    /** This is the activity, encoded as quizXXX or assignmentXXX, where XXX is the module ID. */
-    private $activity;
+    /** This is the base activity type on moodle. */
+    private $basetype;
+    /** This is the ID of the module. */
+    private $modid;
 
     /**
      * Attempt to retrieve the record from the database.
      *
      * @param  int     $courseid  the ID of the course
-     * @param  string  $activity  the encoded name of the activity
+     * @param  string  $basetype  the base type of activity (used within moodle)]
+     * @param  int     $modid     the ID of the module
      */
-    public function __construct($courseid, $activity) {
+    public function __construct($courseid, $basetype, $modid) {
         global $DB;
 
         $this->courseid = $courseid;
-        $this->activity = $activity;
+        $this->basetype = $basetype;
+        $this->modid = $modid;
 
-        $params = array($courseid, $activity);
-        $query = "SELECT * FROM {nurs_navigation_activities} WHERE courseid = ? AND activity = ?";
+        $params = array($courseid, $basetype, $modid);
+        $query = "SELECT * FROM {nurs_navigation_activities} WHERE courseid = ? AND basetype = ? AND modid = ?";
         $record = $DB->get_record_sql($query, $params, IGNORE_MULTIPLE);
         $this->record = $record;
     }
@@ -65,7 +69,7 @@ class activity {
      */
     public function get_type() {
         if ($this->exists() != false) {
-            return $this->record->type;
+            return $this->record->flaggedtype;
         } else {
             return $this->get_moodle_type();
         }
@@ -79,12 +83,16 @@ class activity {
      * @return string  the moodle classification of the activity
      */
     public function get_moodle_type() {
-        if (strpos($this->activity, 'quiz') !== false) {
-            return 'quiz';
-        } else if (strpos($this->activity, 'assign') !== false) {
-            return 'assign';
-        }
-        throw new \Exception(get_string('modnotfound', 'block_nurs_navigation'));
+        return $this->basetype;
+    }
+
+    /**
+     * Returns the module ID.
+     *
+     * @return int  the module ID
+     */
+    public function get_module_id() {
+        return $this->modid;
     }
 
     /**
@@ -98,6 +106,11 @@ class activity {
     public function update_type($type) {
         global $DB;
 
+        // Check if type already matches - save the DB write.
+        if ($type == $this->get_type()) {
+            return;
+        }
+
         if ($type == $this->get_moodle_type()) {
             if ($this->exists()) {
                 $DB->delete_records('nurs_navigation_activities', array('id' => $this->record->id));
@@ -107,19 +120,21 @@ class activity {
         }
 
         if ($this->exists()) {
-            $this->record->type = $type;
+            $this->record->flaggedtype = $type;
             $DB->update_record('nurs_navigation_activities', $this->record);
         } else {
             $record = new \stdClass;
             $record->courseid = $this->courseid;
-            $record->activity = $this->activity;
-            $record->type = $type;
+            $record->basetype = $this->basetype;
+            $record->modid = $this->modid;
+            $record->flaggedtype = $type;
             $id = $DB->insert_record('nurs_navigation_activities', $record);
             if ($id === false) {
                 print_error(get_string('dberror', BNN_LANG_TABLE));
             } else {
                 // On success, grab the new record and store it.
                 $this->record = $DB->get_record('nurs_navigation_activities', array('id' => $id));
+                $this->exists = true;
             }
         }
     }
