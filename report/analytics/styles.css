@@ -120,15 +120,18 @@ body.path-report-analytics g.qygrid .domain {
 body.path-report-analytics .filterheader .select {
     width: 186px;
     float: left;
-    margin: 0 10px 0 0;
+    margin: 0 8px 0 0;
     padding: 0;
 }
 
 body.path-report-analytics .filterheader .select.single,
 body.path-report-analytics .coursefiltercontainer .select.single {
     float: left;
-    padding: 4px;
-    margin: 4px;
+    margin: 3px 4px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    height: 26px;
+    line-height: 26px;
 }
 
 body.path-report-analytics .filterheader {
@@ -160,10 +163,11 @@ body.path-report-analytics .filterheader div[class$="container"] > label,
 body.path-report-analytics .filterheader .criterialabel > label,
 body.path-report-analytics .coursefiltercontainer > label {
     float: left;
-    margin: 4px 0 4px 4px;
-    padding: 4px 12px;
+    margin: 4px;
+    padding: 0px 12px;
     font-weight: bold;
-    min-width: 90px;
+    height: 24px;
+    min-width: 94px;
 }
 
 body.path-report-analytics .coursefiltercontainer {
@@ -182,9 +186,9 @@ body.path-report-analytics .filterheader .advancedtoggle {
     cursor: pointer;
 }
 
-body.path-report-analytics .chartheader button,
-body.path-report-analytics .recipientfiltercontainer button {
-    margin: 5px;
+body.path-report-analytics .chartheader button.ms-choice,
+body.path-report-analytics .recipientfiltercontainer button.ms-choice {
+    margin: 3px;
 }
 
 body.path-report-analytics .chartheader button.applyfilter {
@@ -201,24 +205,20 @@ body.path-report-analytics .filterheader .advancedtoggle {
     float: right;
 }
 
-body.path-report-analytics .filterheader .advancedfilters a {
-    padding: 4px 12px;
-    margin: 4px 0 4px 4px;
-}
-
 body.path-report-analytics .filterheader div.binslider {
-    margin: 10px 10px 10px 5px;
+    float: left;
+    margin: 10px 8px;
     padding: 0;
     width: 150px;
-    float: left;
+    height: 12px;
 }
 
 body.path-report-analytics .filterheader input.binslidervalue {
     float: left;
     width: 25px;
     height: 20px;
-    margin: 5px 0 5px 0;
-    padding: 3px;
+    margin: 6px 0;
+    padding: 1px;
     border: 0;
     color: #f6931f;
     font-weight: bold;
@@ -236,23 +236,19 @@ body.path-report-analytics .ms-drop.bottom {
 }
 
 body.path-report-analytics .ms-choice > div {
-    top: 5px;
+    top: 4px;
 }
 
 body.path-report-analytics .ms-choice > span {
-    padding-top: 4px;
+    padding-top: 10px;
+    line-height: 26px;
 }
 
 body.path-report-analytics .filterheader input.uniquecheck {
     float: left;
-    margin-top: 10px;
-}
-
-body.path-report-analytics input[type="text"].wordcount,
-body.path-report-analytics input[type="text"].usersperpage {
-    margin: 4px;
-    float: left;
-    width: 50px;
+    width: 14px;
+    height: 14px;
+    margin: 9px 4px;
 }
 
 body.path-report-analytics .dateselector .ms-drop {
@@ -268,12 +264,16 @@ body.path-report-analytics .filterheader div[class$="filtercontainer"] > select[
     width: 44px;
 }
 
-body.path-report-analytics .filterheader div[class$="filtercontainer"] > input {
+body.path-report-analytics .filterheader div[class$="filtercontainer"] > input,
+body.path-report-analytics input[type="text"].wordcount,
+body.path-report-analytics input[type="text"].usersperpage {
     width: 60px;
-    height: 31px;
-    margin: 4px;
-    padding: 4px;
+    height: 26px;
+    margin: 3px 4px;
+    padding: 0px 4px;
     float: left;
+    border: 1px solid #aaa;
+    border-radius: 4px;
 }
 
 body.path-report-analytics .wordcloudcontainer {
@@ -330,33 +330,34 @@ body.path-report-analytics .d3chart .forumheader > p {
 /*******************************************************************************
 * Adjusting spacing on moodle forms elements for cleaner rendering
 *******************************************************************************/
-body.path-report-analytics #region-main .chartheader .mform .fitem .felement {
+body.path-report-analytics #region-main .filterheader .col-md-9 {
     margin: 0;
-    padding: 0 0 0 12px;
-    width: 480px;
+    padding: 0;
+    flex: 0 0 480px;
+    max-width: 480px;
+}
+
+body.path-report-analytics .filterheader .mform > .form-group {
+    margin: 0 -15px 2px 0px;
 }
 
 body.path-report-analytics #region-main .filterheader .col-md-3 {
-    padding-top: 25px;
-    padding-left: 35px;
-    width: 80px;
+    flex: 0 0 80px;
+    margin: 4px 0 4px 4px;
+    padding: 4px 12px;
+    font-weight: bold;
 }
 
 body.path-report-analytics #region-main .filterheader .col-md-3 > label {
     font-weight: bold;
 }
 
-body.path-report-analytics #region-main .filterheader .col-md-9 label {
-    width: 35px;
-    height: 35px;
-}
-
-body.path-report-analytics .mform span[data-fieldtype="date_time_selector"] {
-    display: inline-block;
-}
-
 body.path-report-analytics.jsenabled .chartheader .visibleifjs {
     display: none;
+}
+
+body.path-report-analytics #graphchooserform .moodle-dialogue-hd .yui3-widget-buttons {
+    padding: 0;
 }
 
 /*******************************************************************************
@@ -403,11 +404,7 @@ body.path-report-analytics .dateselector i {
 body.path-report-analytics div.addcriterion {
     float: left;
     margin: 6px 0px;
-}
-
-body.path-report-analytics div.addcriterion i {
-    font-size: 20px;
-    display: none;
+    height: 24px;
 }
 
 body.path-report-analytics .filterheader .closebutton,
@@ -434,9 +431,14 @@ body.path-report-analytics .wordcloudcontainer .pngexport i {
     cursor: pointer;
 }
 
-body.path-report-analytics .filterheader i.fa-question-circle {
+body.path-report-analytics .filterheader i.fa-question-circle,
+body.path-report-analytics div.addcriterion i {
     font-size: 16px;
-    margin-top: 10px;
+    margin: 7px 6px 7px 0;
+}
+
+body.path-report-analytics div.addcriterion i {
+    display: none;
 }
 
 body.path-report-analytics .chartheader .chartplaceholder .icon {
@@ -459,6 +461,7 @@ body.path-report-analytics .chartheader.col-md-12 .d3export {
 
 body.path-report-analytics .chartheader.col-md-6 {
     min-width: 600px;
+    padding-right: 0px;
 }
 
 body.path-report-analytics .chartheader.col-md-6 .d3export {
@@ -628,6 +631,12 @@ body.path-report-analytics .modal-background {
 body.path-report-analytics .userpostschart .d3chart h2,
 body.path-report-analytics .userpostschart .d3chart h3 {
     margin: 3px 0;
+}
+
+body.path-report-analytics #chartcontainer {
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 /*******************************************************************************

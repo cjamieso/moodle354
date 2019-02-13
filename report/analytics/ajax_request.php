@@ -31,9 +31,9 @@ $controller = new \report_analytics\ajax_controller();
 $request = required_param('request', PARAM_TEXT);
 // Codechecker now requires check for require_login() in non-internal files.
 $courseid = required_param('courseid', PARAM_INT);
-require_login($courseid, false, null, false, true);
 
 try {
+    require_login($courseid, false, null, false, true);
     $controller->perform_request($request);
 } catch (\Exception $e) {
     echo(json_encode(array('result' => false, 'message' => $e->getMessage())));

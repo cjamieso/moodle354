@@ -388,7 +388,7 @@ define(['local_d3js/d3', 'local_d3js/d3tip', 'jquery'], function(d3, d3tip) {
     var Title = function module() {
 
         /** @property {object}  the attributes used drawing the title */
-        var attributes = {y: -20, cssclass: 'd3title'};
+        var attributes = {y: -18, cssclass: 'd3title'};
 
         /**
          * Add title to d3.js plot.

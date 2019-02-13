@@ -39,12 +39,10 @@ class datetime_form extends \moodleform {
         // Form can be used for multiple dates, make the IDs unique.
         $prefix = time();
 
-        $pagegroup = array();
-        $pagegroup[] = $mform->createElement('date_time_selector', $prefix . 'datefrom', get_string('from', 'moodle'),
+        $mform->addElement('date_time_selector', $prefix . 'datefrom', get_string('from', 'moodle'),
             self::$datefieldoptions);
-        $pagegroup[] = $mform->createElement('date_time_selector', $prefix . 'dateto', get_string('to', 'moodle'),
+        $mform->addElement('date_time_selector', $prefix . 'dateto', get_string('to', 'moodle'),
             self::$datefieldoptions);
-        $mform->addGroup($pagegroup, '', get_string('daterange', 'report_analytics'), null, false);
     }
 
 }
