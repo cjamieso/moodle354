@@ -77,3 +77,4 @@ $string['setassignments'] = 'Set assignment types';
 $string['setquizzes'] = 'Set quiz types';
 $string['showallsections'] = 'Show all sections';
 $string['updatecourseonly'] = 'Update in this course only';
+$string['privacy:metadata'] = 'The nursing navigation block is not configured to be GDPR compliant.';
