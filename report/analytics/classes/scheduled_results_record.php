@@ -108,6 +108,10 @@ class scheduled_results_record {
         if (empty($this->courseid)) {
             throw new \Exception(get_string('invalidcourse', 'report_analytics'));
         }
+        if (empty($this->userids)) {
+            $this->delete();
+            return;
+        }
 
         $record = new \stdClass;
         $record->courseid = $this->courseid;
@@ -130,6 +134,31 @@ class scheduled_results_record {
         }
     }
 
+    /**
+     * This function deletes the record from the database and marks it as no longer existing and
+     * resets the various data fields.
+     */
+    public function delete() {
+        global $DB;
+
+        if ($this->exists) {
+            if ($DB->count_records('report_analytics_results', array('courseid' => $this->courseid))) {
+                $DB->delete_records('report_analytics_results', array('courseid' => $this->courseid));
+                $this->exists = false;
+                $this->userids = null;
+                $this->filters = null;
+                $this->results = null;
+                $this->resultstime = 0;
+                $this->emailtime = 0;
+            }
+        }
+    }
+
+    /**
+     * This function retrieves the course ID.
+     *
+     * @return int  the ID of the course
+     */
     public function get_courseid() {
         return $this->courseid;
     }

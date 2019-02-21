@@ -214,4 +214,12 @@ $string['lastweek'] = 'Last week';
 $string['emailnotification'] = 'This is a notification email from eClass at the University of Alberta, please do not reply.';
 $string['emailremove'] = 'To edit/remove these notifications, visit: ';
 
-$string['privacy:metadata'] = 'The analytics report is not configured to be GDPR compliant.';
+// Privacy API
+$string['privacy:metadata:report_analytics_results'] = 'Contains results from scheduled queries';
+$string['privacy:metadata:report_analytics_results:userids'] = 'IDs of users to send reports to';
+$string['privacy:metadata:report_analytics_results:courseid'] = 'ID of course';
+$string['privacy:metadata:report_analytics_results:filters'] = 'Filters used (json encoded)';
+$string['privacy:metadata:report_analytics_results:results'] = 'Results of applying filter (json encoded)';
+$string['privacy:metadata:report_analytics_results:resultstime'] = 'Timestamp for most recent results';
+$string['privacy:metadata:report_analytics_results:emailtime'] = 'Timestamp for when user emailed results';
+$string['privacy:export:times'] = 'Timestamps for when results generated and emailed.';

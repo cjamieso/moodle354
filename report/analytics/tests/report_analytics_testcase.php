@@ -88,8 +88,8 @@ class report_analytics_testcase extends \advanced_testcase {
     }
 
     /**
-     * This function creates the course that is used for testing.  The course is created,
-     * along with my four test users.  These test users are all enrolled in the course.
+     * This function creates the course that is used for testing.  Students are
+     * enrolled in the course for testing.
      *
      */
     protected function create_course() {
@@ -109,8 +109,7 @@ class report_analytics_testcase extends \advanced_testcase {
     }
 
     /**
-     * This function enrolls the test users.  The first two users are enrolled as
-     * teachers, while the other two are enrolled as students.
+     * This function enrolls the test users.
      *
      */
     protected function enroll_users() {

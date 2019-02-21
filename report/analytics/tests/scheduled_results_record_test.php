@@ -40,6 +40,7 @@ class scheduled_results_record_class_testcase extends report_analytics_testcase 
         global $DB;
 
         $record = new scheduled_results_record($this->courseid);
+        $record->set_userids(array('dummy string'));
         $record->save();
         $this->assertEquals($DB->count_records('report_analytics_results'), 1);
     }
@@ -52,6 +53,7 @@ class scheduled_results_record_class_testcase extends report_analytics_testcase 
 
         $record = new scheduled_results_record($this->courseid);
         $this->assertFalse((bool)$record->exists());
+        $record->set_userids(array('dummy string'));
         $record->save();
         $this->assertTrue((bool)$record->exists());
     }
