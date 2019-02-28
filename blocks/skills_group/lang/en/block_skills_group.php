@@ -202,3 +202,10 @@ $string['skillsgroupjoined'] = 'join group';
 $string['joingroupinfo'] = 'joining group, groupid: ';
 $string['skillsgroupedited'] = 'edit group';
 $string['editgroupinfo'] = 'edit group, groupid: ';
+
+// Privacy API
+$string['privacy:metadata:skills_group_student'] = 'Contains results of student group lock status';
+$string['privacy:metadata:core_group'] = 'Moodle groups are created by the plugin';
+$string['privacy:metadata:skills_group_student:userid'] = 'ID of user';
+$string['privacy:metadata:skills_group_student:groupingid'] = 'ID of grouping';
+$string['privacy:metadata:skills_group_student:finalizegroup'] = 'Lock status';
