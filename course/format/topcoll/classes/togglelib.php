@@ -24,16 +24,18 @@
  *
  * @package    course/format
  * @subpackage topcoll
- * @version    See the value of '$plugin->version' in below.
+ * @version    See the value of '$plugin->version' in version.php.
  * @copyright  &copy; 2012-onwards G J Barnard in respect to modifications of standard topics format.
  * @author     G J Barnard - {@link http://moodle.org/user/profile.php?id=442195}
  * @link       http://docs.moodle.org/en/Collapsed_Topics_course_format
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  *
  */
-defined('MOODLE_INTERNAL') || die();
+namespace format_topcoll;
 
-class topcoll_togglelib {
+defined('MOODLE_INTERNAL') || die;
+
+class togglelib {
 
     // Digits used = ":;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxy";
     // Note: An ':' is 58 Ascii so to go between six digit base 2 and this then add / subtract 58.
@@ -58,8 +60,8 @@ class topcoll_togglelib {
     }
 
     /**
-     * Tells us the toggle state from the DB.
-     * returns $toggles - Toggles state..
+     * Gets toggle state stored here.
+     * returns $toggles - Toggles state.
      */
     public function get_toggles() {
         return $this->toggles;
@@ -92,6 +94,26 @@ class topcoll_togglelib {
             $value &= ~$toggleflag;
         }
         $this->toggles[$togglecharpos - 1] = self::encode_value_to_character($value);
+    }
+
+    /**
+     * Gets the string binary representation of the given toggle state.
+     * string $toggles - Toggles state.
+     * returns string.
+     */
+    public function decode_toggle_state($toggles) {
+        $togglestate = '';
+        $strlen = strlen($toggles);
+        for ($chars = 0; $chars < $strlen; $chars++) {
+            $charval = self::decode_character_to_value($toggles[$chars]);
+            $togglestate .= (($charval & self::TOGGLE_1) == self::TOGGLE_1) ? '1' : '0';
+            $togglestate .= (($charval & self::TOGGLE_2) == self::TOGGLE_2) ? '1' : '0';
+            $togglestate .= (($charval & self::TOGGLE_3) == self::TOGGLE_3) ? '1' : '0';
+            $togglestate .= (($charval & self::TOGGLE_4) == self::TOGGLE_4) ? '1' : '0';
+            $togglestate .= (($charval & self::TOGGLE_5) == self::TOGGLE_5) ? '1' : '0';
+            $togglestate .= (($charval & self::TOGGLE_6) == self::TOGGLE_6) ? '1' : '0';
+        }
+        return $togglestate;
     }
 
     /**
@@ -227,48 +249,49 @@ class topcoll_togglelib {
 
         return $retr;
     }
-}
 
-/**
- * Returns a required_param() toggle value for the named user preference.
- *
- * @param string $parname the name of the user preference we want
- * @return mixed
- * @throws coding_exception
- */
-function required_topcoll_param($parname) {
-    if (empty($parname)) {
-        throw new coding_exception('required_topcoll_param() requires $parname to be specified');
-    }
-    $param = required_param($parname, PARAM_RAW);
-
-    return clean_topcoll_param($param);
-}
-
-/**
- * Used by required_topcoll_param to clean the toggle parameter.
- *
- * @param string $param the variable we are cleaning
- * @return mixed
- * @throws coding_exception
- */
-function clean_topcoll_param($param) {
-    if (is_array($param)) {
-        throw new coding_exception('clean_topcoll_param() can not process arrays.');
-    } else if (is_object($param)) {
-        if (method_exists($param, '__toString')) {
-            $param = $param->__toString();
-        } else {
-            throw new coding_exception('clean_topcoll_param() can not process objects.');
+    /**
+     * Returns a required_param() toggle value for the named user preference.
+     *
+     * @param string $parname the name of the user preference we want
+     * @return mixed
+     * @throws coding_exception
+     */
+    static public function required_topcoll_param($parname) {
+        if (empty($parname)) {
+            throw new coding_exception('required_topcoll_param() requires $parname to be specified');
         }
+        $param = required_param($parname, PARAM_RAW);
+
+        return self::clean_topcoll_param($param);
     }
 
-    $chars = strlen($param);
-    for ($i = 0; $i < $chars; $i++) {
-        $charval = ord($param[$i]);
-        if (($charval < 58) || ($charval > 121)) {
-            return false;
+    /**
+     * Used by required_topcoll_param to clean the toggle parameter.
+     *
+     * @param string $param the variable we are cleaning
+     * @return mixed
+     * @throws coding_exception
+     */
+    static public function clean_topcoll_param($param) {
+        if (is_array($param)) {
+            throw new coding_exception('clean_topcoll_param() can not process arrays.');
+        } else if (is_object($param)) {
+            if (method_exists($param, '__toString')) {
+                $param = $param->__toString();
+            } else {
+                throw new coding_exception('clean_topcoll_param() can not process objects.');
+            }
         }
+
+        $chars = strlen($param);
+        for ($i = 0; $i < $chars; $i++) {
+            $charval = ord($param[$i]);
+            if (($charval < 58) || ($charval > 121)) {
+                return false;
+            }
+        }
+        return $param;
     }
-    return $param;
 }
+

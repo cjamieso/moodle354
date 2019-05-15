@@ -34,8 +34,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2018021600;
+$plugin->version = 2018052302;
 $plugin->maturity = MATURITY_BETA;
-$plugin->requires  = 2017102700.00; // 3.4beta+ (Build: 20171027).
+$plugin->requires  = 2018051700.00; // 3.5 (Build: 20180517).
 $plugin->component = 'format_collblct';
-$plugin->release = '3.4.0.1';
+$plugin->release = '3.5.0.3';

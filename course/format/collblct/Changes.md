@@ -1,5 +1,32 @@
 ﻿Version Information
 ===================
+Version 3.5.0.3
+  1. Fix CONTRIB-7434:
+        With reference to 'global_start_keyboard_drag' and 'find_element_text' in /lib/yui/src/dragdrop/js/dragdrop.js
+        and 'initializer' of /course/yui/src/dragdrop/js/resource.js this is down to the 'droptargets' list not containing
+        a node that contains the section name because CT has broken down the section content into two separate sub-sections
+        and other core course formats only have the one section containing the section markup.  Therefore the solution effectively
+        allows 'find_element_text' to find the hidden section name first within the 'labelroot' node that is determined.
+  2. When accessing a module through a single section page (not the navigation block) then ensure that you are returned
+     to the same single section page when using the breadcrumb.
+  3. Fix 'Edit section name button disappearing when moving section and Toggle word added' - #44 - with thanks to
+     Joshua Ebarvia - https://github.com/jebarviabb - for the patch.
+
+Version 3.5.0.2
+  1. Tidy up one section icon.
+  2. Fix CONTRIB-7393.
+  3. Treat themes using Boost as a parent the same as Boost - thanks to Tony Butler.
+
+Version 3.5.0.1
+  1. M3.5 version based on V3.4.0.2.
+  2. Put back 'numsections'.
+
+Version 3.4.0.2
+  1. Fix colour popup form element not rendering correctly in Boost theme.
+  2. Apply MDL-60241 course: General section always visible.
+  3. Support Privacy API.
+  4. Fix #40.
+
 Version 3.4.0.1
   1. First beta version for M3.4.
 

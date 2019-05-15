@@ -40,6 +40,8 @@ class toolbox {
 
     protected static $instance;
 
+    const collblct_TOGGLE = 'collblct_toggle';
+
     private function __construct() {
     }
 

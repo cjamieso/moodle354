@@ -28,6 +28,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* Icon sets.  Note: Background images for the settings - does not work in Chrome or Safari - known issue. */
+/* Arrow icon set. */
 body.jsenabled .course-content ul.ctopics li.section .content .toggle-arrow span.toggle_closed, /* JavaScript enabled */
 #toggle-all .content .toggle-arrow h4 span.on,
 body#page-admin-setting-formatsettingcollblct select#id_s_format_collblct_defaulttoggleiconset option[value="arrow"],
@@ -55,7 +57,6 @@ body#page-admin-setting-formatsettingcollblct select#id_s_format_collblct_defaul
 body#page-course-edit select#id_toggleiconset option[value="eye"] {
     background-image: url([[pix:format_collblct|eye_hide]]);
 }
-
 body.jsenabled .course-content ul.ctopics li.section .content .toggle-folder span.toggle_closed, /* JavaScript enabled */
 #toggle-all .content .toggle-folder h4 span.on,
 body#page-admin-setting-formatsettingcollblct select#id_s_format_collblct_defaulttoggleiconset option[value="folder"],

@@ -4,7 +4,7 @@ topcoll -> collblct in all files
 
 Add hooks to lang/en file (bottom)
 
-Move over extra files in JS folder -> {init_accordion.js, jquery.nestedAccordion.js}
+Move over extra files in amd folder -> {init_accordion.js, jquery.nestedAccordion.js}
 Copy over install.xml
 Move over code in upgrade.php (Commented with Craig's DB)
 Add capability for "collblct:caneditcollapsedlabelcolors" to access.php
@@ -12,7 +12,7 @@ Copy over plus.gif and minus.gif from pix folder
 
 Copy over other files -> {collapsed_label_hooks.php, collapsed_menu.class.php, course_color_record.class.php,
             course_section_record.class.php, edit_course_settings.php, label_info.class.php, locallib.php,
-            mod_depths.class.php, settings_edit_form.php, unittest.xml, tests folder}
+            mod_depths.class.php, settings_edit_form.php, unittest.xml, new tests in tests folder}
 
 Merge changes into styles.css
 
