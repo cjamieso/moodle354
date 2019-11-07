@@ -213,3 +213,5 @@ $string['lastweek'] = 'Last week';
 // Email footer text.
 $string['emailnotification'] = 'This is a notification email from eClass at the University of Alberta, please do not reply.';
 $string['emailremove'] = 'To edit/remove these notifications, visit: ';
+
+$string['privacy:metadata'] = 'The analytics report is not configured to be GDPR compliant.';
