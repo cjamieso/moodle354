@@ -25,7 +25,7 @@ env:
 
 addons:
     firefox: "46.0"
-    postgresql: "11.2"
+    postgresql: "9.4"
     artifacts:
       paths:
         - $HOME/roots/behatfail
@@ -45,11 +45,6 @@ services:
 before_install:
     # Disable xdebug. We aren't generating code coverage, and it has a huge impact upon test performance.
     - phpenv config-rm xdebug.ini
-    - sudo apt-get update
-    - sudo apt-get --yes remove postgresql\*
-    - sudo apt-get install -y postgresql-11 postgresql-client-11
-    - sudo cp /etc/postgresql/{9.6,11}/main/pg_hba.conf
-    - sudo service postgresql restart 11
 
 install:
     # Set the encrypted GITHUB_TOKEN if it's available to raise the API limit.
